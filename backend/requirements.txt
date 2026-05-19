@@ -1,0 +1,22 @@
+# === CIRO Backend Dependencies ===
+# Core
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+pydantic==2.11.3
+pydantic-settings==2.9.1
+
+# Google ADK / Gemini
+google-adk
+google-genai
+
+# Async HTTP & WebSockets
+httpx==0.28.1
+websockets==15.0.1
+
+# Data & Utilities
+python-dotenv==1.1.0
+orjson==3.10.18
+
+# Logging & Observability
+loguru==0.7.3
+rich==14.0.0

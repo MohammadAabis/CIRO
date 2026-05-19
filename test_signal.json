@@ -1,0 +1,9 @@
+{
+  "source": "WEATHER_API",
+  "raw_text": "Extreme heatwave alert for F-8. Temperature reached 47C (heat index 52C). High risk of heat strokes. Multiple hyperthermia cases reported.",
+  "location": {
+    "latitude": 33.706,
+    "longitude": 73.0551,
+    "label": "F-8, Islamabad"
+  }
+}
