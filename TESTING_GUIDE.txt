@@ -1,0 +1,196 @@
+================================================================================
+CIRO SYSTEM - TESTING GUIDE
+================================================================================
+
+PREREQUISITE: Both backend and frontend must be running
+
+Backend:
+  cd backend
+  python -m uvicorn app.main:app --reload
+
+Frontend:
+  cd frontend
+  flutter run -d chrome
+
+================================================================================
+1. VERIFY BACKEND IS RUNNING
+================================================================================
+
+Open terminal and run:
+  curl http://127.0.0.1:8000/health
+
+Expected: Should show {"status": "ok"}
+
+If not working: Backend is offline. Start it first.
+
+================================================================================
+2. START FRONTEND
+================================================================================
+
+Frontend loads at: http://localhost:8080
+
+You should see 4 panels:
+  - REAL-TIME CRISIS MAP (shows crisis list)
+  - MULTI-SOURCE SIGNAL INGESTION (3 buttons to inject signals)
+  - ANTIGRAVITY AGENT THINKING TERMINAL (live trace logs)
+  - AI RESPONSE SIMULATION & PIVOT PANEL (shows simulation results)
+
+================================================================================
+3. TEST SIGNAL INJECTION
+================================================================================
+
+Step 1: Click "Inject Flood Telemetry" button
+  - Frontend shows signal in "LIVE INGESTED RAW SIGNALS FEED" (bottom left)
+  - Backend terminal shows: "[Pipeline XXX] Starting GenAI pipeline..."
+
+Step 2: Wait 2-3 seconds for backend processing
+  - If Gemini API has quota: See "Using fallback mock" in backend logs
+  - If Gemini works: See actual Gemini classification logs
+
+Step 3: Backend creates CRISIS + SIMULATION (automatic)
+  - Check backend logs: "[Pipeline XXX] Crisis created" 
+  - Check backend logs: "[Pipeline XXX] Simulation dispatched"
+
+Step 4: Refresh browser (press F5)
+  - Crisis should appear in "REAL-TIME CRISIS MAP" area as a card
+  - Simulation should appear in "AI RESPONSE SIMULATION & PIVOT PANEL"
+
+================================================================================
+4. WHAT YOU'LL SEE - Crisis Card
+================================================================================
+
+Crisis card shows:
+  ● Red dot indicator
+  ● Crisis title (e.g., "Urban Flooding")
+  ● Severity level
+  ● Location coordinates
+
+Example:
+  🔴 Urban Flooding – G-10 Islamabad
+     Severity: 4/5
+     Location: 33.70, 73.00
+
+================================================================================
+5. WHAT YOU'LL SEE - Simulation Panel
+================================================================================
+
+Before state (baseline, no intervention):
+  - Affected population: 15,000
+  - Severity: CATASTROPHIC
+  - Infrastructure damage: 35%
+
+After state (with AI response):
+  - Affected population: 5,000 (reduced)
+  - Severity: MODERATE (reduced)
+  - Infrastructure damage: 15% (reduced)
+
+Recommendation:
+  "Dispatch emergency services. Traffic redirected. Public alerts sent."
+
+================================================================================
+6. TEST ALL 3 INJECTION BUTTONS
+================================================================================
+
+Button 1: Inject Flood Telemetry
+  Signal: Heavy rainfall in G-10, drains overflowed
+  Expected: Urban Flooding crisis, severity 4/5
+
+Button 2: Inject Field Correction
+  Signal: Water main burst (false alarm for flood)
+  Expected: Infrastructure failure marked, might be reclassified
+
+Button 3: Inject Heatwave Telemetry
+  Signal: 47°C temperature in F-8 Markaz
+  Expected: Heatwave crisis, severity 3/5
+
+================================================================================
+7. UNDERSTANDING SIGNAL FLOW
+================================================================================
+
+Your Urdu input: "G-10 mein pani bhar gaya hai, gaariyan phans gayi hain"
+(Water flooded in G-10, vehicles stuck)
+
+Flow:
+  1. Frontend sends signal to /api/v1/ingest
+  2. Backend receives → Gemini classifies
+     - Detects: flooding, vehicle impact
+     - Sets type: urban_flood
+     - Sets severity: 4/5
+  3. Backend creates Crisis object
+  4. Backend runs simulation
+     - Simulates: emergency response → reduced impact
+  5. Frontend polls /api/v1/crises and /api/v1/simulations
+  6. Results display on UI
+
+Current status: Using FALLBACK (Gemini quota) = mock classification
+Real AI: Would use actual Gemini API for classification
+
+================================================================================
+8. CHECKING LIVE LOGS
+================================================================================
+
+Backend logs show pipeline progress:
+
+  [Pipeline c594dfb9] Starting GenAI pipeline...
+  [Pipeline c594dfb9] Fusing 2 signals
+  [Pipeline c594dfb9] Classifying crisis
+  [Pipeline c594dfb9] Allocating resources
+  [Pipeline c594dfb9] Running simulation
+  [Pipeline c594dfb9] Crisis created (ID: abc-123)
+  [Pipeline c594dfb9] Simulation dispatched
+  [Pipeline c594dfb9] Pipeline run finished
+
+Look for: "[Pipeline XXX] Pipeline run finished" = success
+
+================================================================================
+9. TROUBLESHOOTING
+================================================================================
+
+Problem: Signal injected but nothing appears
+  → Check backend logs for errors
+  → Refresh browser (F5)
+  → Wait 3 seconds - backend needs time to process
+
+Problem: "Gemini API error: 429 RESOURCE_EXHAUSTED"
+  → Normal - Gemini free tier has 20 requests/day quota
+  → System automatically uses fallback mock (still works)
+  → To get real AI: Upgrade Gemini to paid plan
+
+Problem: Map shows only text list, not actual map
+  → Expected on web browser
+  → Google Maps works better on mobile APK
+  → Feature will work when we build APK
+
+Problem: Simulation panel shows "No active simulations"
+  → Inject a signal first
+  → Wait 3 seconds
+  → Refresh browser
+
+================================================================================
+10. WHAT'S WORKING
+================================================================================
+
+✓ Signal injection (all 3 buttons)
+✓ Crisis creation (appears after refresh)
+✓ Simulation generation (appears after refresh)
+✓ Fallback when Gemini quota exceeded
+✓ Live trace logs in terminal
+✓ Crisis list display on map area
+✓ Simulation before/after comparison
+
+✗ Real Google Map visualization (web limitation)
+✗ Live streaming (works on mobile APK)
+
+================================================================================
+11. NEXT STEPS
+================================================================================
+
+After testing web:
+  1. Build APK: flutter build apk
+  2. Test on Android phone
+  3. Google Maps will display actual map (works on mobile)
+  4. All features will work better
+
+================================================================================
+END TESTING GUIDE
+================================================================================

@@ -41,13 +41,13 @@ class CrisisType(str, Enum):
     OTHER = "other"
 
 
-class Severity(int, Enum):
+class Severity(str, Enum):
     """1 (minor) → 5 (catastrophic)."""
-    MINOR = 1
-    MODERATE = 2
-    SIGNIFICANT = 3
-    SEVERE = 4
-    CATASTROPHIC = 5
+    MINOR = "1"
+    MODERATE = "2"
+    SIGNIFICANT = "3"
+    SEVERE = "4"
+    CATASTROPHIC = "5"
 
 
 class ResourceType(str, Enum):
@@ -84,7 +84,7 @@ class GeoLocation(BaseModel):
     """Latitude / longitude pair with optional label."""
     latitude: float = Field(..., ge=-90, le=90)
     longitude: float = Field(..., ge=-180, le=180)
-    label: Optional[str] = Field(None, max_length=256, examples=["G-10 Markaz, Islamabad"])
+    label: Optional[str] = Field(None, max_length=256)
 
 
 class WeatherMetrics(BaseModel):

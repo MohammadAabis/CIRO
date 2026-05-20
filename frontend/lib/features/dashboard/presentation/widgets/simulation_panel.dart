@@ -16,7 +16,8 @@ class SimulationPanel extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.query_stats, size: 48, color: AppTheme.textSecondary),
+                Icon(Icons.query_stats,
+                    size: 48, color: AppTheme.textSecondary),
                 SizedBox(height: 12),
                 Text(
                   'No active simulations running',
@@ -61,7 +62,8 @@ class SimulationPanel extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.psychology, color: AppTheme.accentCyan, size: 20),
+                    const Icon(Icons.psychology,
+                        color: AppTheme.accentCyan, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       'AI RESPONSE SIMULATION & PIVOT PANEL',
@@ -73,7 +75,8 @@ class SimulationPanel extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.accentCyan.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -92,7 +95,11 @@ class SimulationPanel extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'ALLOCATION ACTIONS',
-              style: TextStyle(fontSize: 10, letterSpacing: 1.0, color: Colors.blue.shade200, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 10,
+                  letterSpacing: 1.0,
+                  color: Colors.blue.shade200,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             Container(
@@ -100,59 +107,76 @@ class SimulationPanel extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.surfaceDark,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
+                border: Border.all(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
               ),
               child: Text(
                 responseAction,
-                style: const TextStyle(fontSize: 12, height: 1.4, color: AppTheme.textPrimary),
+                style: const TextStyle(
+                    fontSize: 12, height: 1.4, color: AppTheme.textPrimary),
               ),
             ),
             const SizedBox(height: 16),
 
             // Before vs. After comparison
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStateSummary(
-                    title: 'BASELINE (NO INTERVENTION)',
-                    color: AppTheme.criticalRed,
-                    affected: before['affected_population']?.toString() ?? '12,000',
-                    severity: before['severity'] ?? 'CATASTROPHIC',
-                    casualties: before['casualties_estimate']?.toString() ?? '8',
-                    damage: '${before['infrastructure_damage_pct']?.toString() ?? '35'}%',
-                    narrative: before['narrative'] ?? '',
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 180,
+                    child: _buildStateSummary(
+                      title: 'BASELINE (NO INTERVENTION)',
+                      color: AppTheme.criticalRed,
+                      affected:
+                          before['affected_population']?.toString() ?? '12,000',
+                      severity: before['severity'] ?? 'CATASTROPHIC',
+                      casualties:
+                          before['casualties_estimate']?.toString() ?? '8',
+                      damage:
+                          '${before['infrastructure_damage_pct']?.toString() ?? '35'}%',
+                      narrative: before['narrative'] ?? '',
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                const Icon(Icons.arrow_forward, color: AppTheme.accentCyan),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildStateSummary(
-                    title: 'MITIGATED (AGENT PROJECTION)',
-                    color: AppTheme.successGreen,
-                    affected: after['affected_population']?.toString() ?? '5,000',
-                    severity: after['severity'] ?? 'MODERATE',
-                    casualties: after['casualties_estimate']?.toString() ?? '1',
-                    damage: '${after['infrastructure_damage_pct']?.toString() ?? '15'}%',
-                    narrative: after['narrative'] ?? '',
+                  const SizedBox(width: 12),
+                  const Icon(Icons.arrow_forward, color: AppTheme.accentCyan),
+                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: 180,
+                    child: _buildStateSummary(
+                      title: 'MITIGATED (AGENT PROJECTION)',
+                      color: AppTheme.successGreen,
+                      affected:
+                          after['affected_population']?.toString() ?? '5,000',
+                      severity: after['severity'] ?? 'MODERATE',
+                      casualties:
+                          after['casualties_estimate']?.toString() ?? '1',
+                      damage:
+                          '${after['infrastructure_damage_pct']?.toString() ?? '15'}%',
+                      narrative: after['narrative'] ?? '',
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 16),
 
             // Stakeholder Notifications
             Text(
               'AUTOMATED BROADCAST ALERTS',
-              style: TextStyle(fontSize: 10, letterSpacing: 1.0, color: Colors.cyan.shade200, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 10,
+                  letterSpacing: 1.0,
+                  color: Colors.cyan.shade200,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             _buildNotificationCard(
               title: 'CIVIC BROADCAST (CELL CELLULAR)',
               icon: Icons.cell_tower,
               color: AppTheme.warningAmber,
-              message: publicAlert.isNotEmpty 
-                  ? publicAlert 
+              message: publicAlert.isNotEmpty
+                  ? publicAlert
                   : 'Heatwave warning active in Sector F-8. Hydrate frequently.',
             ),
             const SizedBox(height: 8),
@@ -160,8 +184,8 @@ class SimulationPanel extends StatelessWidget {
               title: 'HEALTH FACILITIES (PIMS EMERGENCY)',
               icon: Icons.local_hospital,
               color: AppTheme.criticalRed,
-              message: hospitalAlert.isNotEmpty 
-                  ? hospitalAlert 
+              message: hospitalAlert.isNotEmpty
+                  ? hospitalAlert
                   : 'Coordinate medical rotation units for shared casualty surge.',
             ),
             const SizedBox(height: 8),
@@ -169,8 +193,8 @@ class SimulationPanel extends StatelessWidget {
               title: 'UTILITIES (CDA SERVICE CREWS)',
               icon: Icons.engineering,
               color: AppTheme.primaryBlue,
-              message: utilityAlert.isNotEmpty 
-                  ? utilityAlert 
+              message: utilityAlert.isNotEmpty
+                  ? utilityAlert
                   : 'Power transformers offline in sector F-8 to manage grid surge.',
             ),
           ],
@@ -190,7 +214,13 @@ class SimulationPanel extends StatelessWidget {
   }) {
     String severityStr = severity.toString();
     if (severity is int) {
-      severityStr = ['Minor', 'Moderate', 'Significant', 'Severe', 'Catastrophic'][severity - 1];
+      severityStr = [
+        'Minor',
+        'Moderate',
+        'Significant',
+        'Severe',
+        'Catastrophic'
+      ][severity - 1];
     }
     return Container(
       padding: const EdgeInsets.all(12),
@@ -204,12 +234,14 @@ class SimulationPanel extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.bold, color: color),
           ),
           const SizedBox(height: 8),
           _buildMetricRow('Severity:', severityStr, color),
           const SizedBox(height: 4),
-          _buildMetricRow('Exposure:', '$affected citizens', AppTheme.textPrimary),
+          _buildMetricRow(
+              'Exposure:', '$affected citizens', AppTheme.textPrimary),
           const SizedBox(height: 4),
           _buildMetricRow('Est. Casualties:', casualties, AppTheme.textPrimary),
           const SizedBox(height: 4),
@@ -217,7 +249,10 @@ class SimulationPanel extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             narrative,
-            style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: AppTheme.textSecondary),
+            style: const TextStyle(
+                fontSize: 10,
+                fontStyle: FontStyle.italic,
+                color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -228,8 +263,12 @@ class SimulationPanel extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-        Text(value, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: valueColor)),
+        Text(label,
+            style:
+                const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+        Text(value,
+            style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: valueColor)),
       ],
     );
   }
@@ -258,12 +297,14 @@ class SimulationPanel extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color),
+                  style: TextStyle(
+                      fontSize: 9, fontWeight: FontWeight.bold, color: color),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   message,
-                  style: const TextStyle(fontSize: 11, color: AppTheme.textPrimary, height: 1.3),
+                  style: const TextStyle(
+                      fontSize: 11, color: AppTheme.textPrimary, height: 1.3),
                 ),
               ],
             ),

@@ -73,20 +73,20 @@ class CiroNotifier extends StateNotifier<CiroState> {
 
   Future<void> refreshData() async {
     final online = await _api.checkHealth();
-    
+
     // Fetch stats
     final statsData = await _api.getStats();
-    
+
     // Fetch crises list
     final crisesResponse = await _api.getCrises();
     final crisesList = crisesResponse['crises'] ?? [];
-    
+
     // Fetch resources inventory
     final resourcesResponse = await _api.getResources();
-    final resourcesList = resourcesResponse['summary'] != null 
-        ? [resourcesResponse['summary']] 
+    final resourcesList = resourcesResponse['summary'] != null
+        ? [resourcesResponse['summary']]
         : [];
-        
+
     // Fetch simulations
     final simsList = await _api.getSimulations();
 
@@ -106,7 +106,7 @@ class CiroNotifier extends StateNotifier<CiroState> {
 
   void _startPeriodicRefresh() {
     _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       refreshData();
     });
   }
@@ -114,10 +114,12 @@ class CiroNotifier extends StateNotifier<CiroState> {
   void _startTraceStreaming() {
     _traceSubscription?.cancel();
     _traceSubscription = _api.streamTraceEntries().listen((entry) {
-      final updatedTraces = List<Map<String, dynamic>>.from(state.traceEntries)..insert(0, entry);
-      
+      final updatedTraces = List<Map<String, dynamic>>.from(state.traceEntries)
+        ..insert(0, entry);
+
       // If we see a live signal processing entry, we append to our signal ticker feed!
-      List<Map<String, dynamic>> updatedSignals = List<Map<String, dynamic>>.from(state.rawSignals);
+      List<Map<String, dynamic>> updatedSignals =
+          List<Map<String, dynamic>>.from(state.rawSignals);
       if (entry['action'] == 'fuse_multisource_signals') {
         updatedSignals.insert(0, {
           'timestamp': DateTime.now().toIsoformatString(),
@@ -145,7 +147,7 @@ class CiroNotifier extends StateNotifier<CiroState> {
       },
       'reliability_score': 0.95
     };
-    
+
     // Add local optimistic signal to ticker feed
     final localSig = {
       'timestamp': DateTime.now().toIsoformatString(),
@@ -153,7 +155,7 @@ class CiroNotifier extends StateNotifier<CiroState> {
       'raw_text': report,
       'reliability_score': 0.95
     };
-    
+
     state = state.copyWith(
       rawSignals: [localSig, ...state.rawSignals],
     );
@@ -165,19 +167,26 @@ class CiroNotifier extends StateNotifier<CiroState> {
   List<Map<String, dynamic>> _getInitialSignals() {
     return [
       {
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIsoformatString(),
+        'timestamp': DateTime.now()
+            .subtract(const Duration(minutes: 5))
+            .toIsoformatString(),
         'source': 'weather_api',
-        'raw_text': 'ALERT: Severe flash flood threat over Sector G-10. Drains active.',
+        'raw_text':
+            'ALERT: Severe flash flood threat over Sector G-10. Drains active.',
         'reliability_score': 0.95
       },
       {
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 12)).toIsoformatString(),
+        'timestamp': DateTime.now()
+            .subtract(const Duration(minutes: 12))
+            .toIsoformatString(),
         'source': 'citizen_report',
         'raw_text': 'Water levels rising inside F-8 Markaz basements.',
         'reliability_score': 0.70
       },
       {
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 18)).toIsoformatString(),
+        'timestamp': DateTime.now()
+            .subtract(const Duration(minutes: 18))
+            .toIsoformatString(),
         'source': 'iot_device',
         'raw_text': 'Sector G-10 Line Water Pressure Drop: 12 PSI detected.',
         'reliability_score': 0.90

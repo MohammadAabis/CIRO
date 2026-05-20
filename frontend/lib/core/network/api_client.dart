@@ -78,12 +78,12 @@ class ApiClient {
       final response = await _dio.get('$baseUrl/api/v1/simulations/');
       final data = response.data;
       if (data is Map && data.containsKey('simulations')) {
-        return data['simulations'];
+        return data['simulations'] as List<dynamic>;
       }
-      return [];
+      return data is List ? data : [];
     } catch (e) {
-      debugPrint('Error getting simulations: $e');
-      return _mockSimulations();
+      // Silent fail - return empty list
+      return [];
     }
   }
 

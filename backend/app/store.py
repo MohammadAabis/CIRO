@@ -48,7 +48,7 @@ class CiroStore:
         items = list(self.crises.values())
         if active_only:
             items = [c for c in items if not c.is_false_alarm]
-        return sorted(items, key=lambda c: c.severity.value, reverse=True)
+        return sorted(items, key=lambda c: int(c.severity), reverse=True)
 
     async def get_crisis(self, crisis_id: UUID) -> Optional[CrisisState]:
         return self.crises.get(crisis_id)

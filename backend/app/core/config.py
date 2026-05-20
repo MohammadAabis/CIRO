@@ -17,11 +17,11 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # ── Google Gemini / ADK (REQUIRED) ──────────────
-    GOOGLE_API_KEY: str = "AIzaSyCgM_IOZPnl-_z1Z3AxUkUlbgNEi6mr_P8"
-    GEMINI_MODEL: str = "gemini-flash-latest"
+    GOOGLE_API_KEY: str = "AIzaSyB23TP0JIBhkXWNSH4L3ASEvZi0_N4Dhwo"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # ── Google Maps (REQUIRED for Flutter map widget) ─
-    GOOGLE_MAPS_API_KEY: str = "AIzaSyB3Yjt4vr-b-6ZCmJiDP0fZl2Co8BmRPLQ"
+    GOOGLE_MAPS_API_KEY: str = "AIzaSyBKtgE19NSpDioluUGaCm8noV2xMLySOeE"
 
     # ── OpenWeatherMap (OPTIONAL) ───────────────────
     OPENWEATHER_API_KEY: str = ""

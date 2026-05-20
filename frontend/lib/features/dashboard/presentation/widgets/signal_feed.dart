@@ -35,12 +35,14 @@ class _SignalFeedState extends State<SignalFeed> {
               children: [
                 const Icon(Icons.sensors, color: AppTheme.accentCyan, size: 20),
                 const SizedBox(width: 8),
-                Text(
-                  'MULTI-SOURCE SIGNAL INGESTION & STRESS HUB',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        letterSpacing: 1.2,
-                        fontWeight: FontWeight.bold,
-                      ),
+                Expanded(
+                  child: Text(
+                    'MULTI-SOURCE SIGNAL INGESTION & STRESS HUB',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                 ),
               ],
             ),
@@ -56,47 +58,53 @@ class _SignalFeedState extends State<SignalFeed> {
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildScenarioButton(
-                    title: 'Inject Flood Telemetry',
-                    subtitle: 'G-10 Sector Flood Warning',
-                    icon: Icons.thunderstorm,
-                    color: AppTheme.primaryBlue,
-                    onTap: () => widget.onIngest(
-                      'G-10',
-                      'CRITICAL STORM REPORT: G-10 drains overflowed, 82mm rain. Water height +50cm. Commencing basement flooding alerts.',
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 140,
+                    child: _buildScenarioButton(
+                      title: 'Inject Flood Telemetry',
+                      subtitle: 'G-10 Sector Flood Warning',
+                      icon: Icons.thunderstorm,
+                      color: AppTheme.primaryBlue,
+                      onTap: () => widget.onIngest(
+                        'G-10',
+                        'CRITICAL STORM REPORT: G-10 drains overflowed, 82mm rain. Water height +50cm. Commencing basement flooding alerts.',
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildScenarioButton(
-                    title: 'Inject Field Correction',
-                    subtitle: 'Water Main Burst (False Alarm)',
-                    icon: Icons.build,
-                    color: AppTheme.successGreen,
-                    onTap: () => widget.onIngest(
-                      'G-10',
-                      'FIELD UPDATE: Burst water main on 7th Avenue confirmed (12 PSI). Flash flood warning retracted. Locals report pipe leak.',
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 140,
+                    child: _buildScenarioButton(
+                      title: 'Inject Field Correction',
+                      subtitle: 'Water Main Burst (False Alarm)',
+                      icon: Icons.build,
+                      color: AppTheme.successGreen,
+                      onTap: () => widget.onIngest(
+                        'G-10',
+                        'FIELD UPDATE: Burst water main on 7th Avenue confirmed (12 PSI). Flash flood warning retracted. Locals report pipe leak.',
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildScenarioButton(
-                    title: 'Inject Heatwave Telemetry',
-                    subtitle: 'F-8 Extreme Thermal Surge',
-                    icon: Icons.light_mode,
-                    color: AppTheme.warningAmber,
-                    onTap: () => widget.onIngest(
-                      'F-8',
-                      'MET THERMAL SURGE: 47°C recorded in F-8 Markaz. 3 hyperthermia collapses. Requesting urgent cooling dispatch.',
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 140,
+                    child: _buildScenarioButton(
+                      title: 'Inject Heatwave Telemetry',
+                      subtitle: 'F-8 Extreme Thermal Surge',
+                      icon: Icons.light_mode,
+                      color: AppTheme.warningAmber,
+                      onTap: () => widget.onIngest(
+                        'F-8',
+                        'MET THERMAL SURGE: 47°C recorded in F-8 Markaz. 3 hyperthermia collapses. Requesting urgent cooling dispatch.',
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 16),
 
