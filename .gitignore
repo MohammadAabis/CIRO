@@ -14,7 +14,7 @@ backend/**/__pycache__/
 backend/.env
 backend/.venv/
 backend/venv/
-config.py
+backend/app/core/config.py
 
 # Frontend
 frontend/.dart_tool/
