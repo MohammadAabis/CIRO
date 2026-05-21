@@ -13,7 +13,7 @@ from typing import Optional
 import httpx
 
 from app.core.config import settings
-from app.schemas import GeoLocation, IngestedSignal, SignalSource, WeatherMetrics
+from app.schemas import GeoLocation, IngestedSignal, SignalSource, TrafficData, WeatherMetrics
 from app.store import store
 
 logger = logging.getLogger("ciro.ingestion.live")
@@ -128,7 +128,7 @@ async def fetch_weather_signal() -> Optional[IngestedSignal]:
 
 
 async def seed_live_signals() -> int:
-    """Seed live signals from Open-Meteo weather API and mock IoT sensors."""
+    """Seed live signals from Open-Meteo weather API, mock IoT sensors, and traffic sensors."""
     signals: list[IngestedSignal] = []
 
     # Fetch live weather
@@ -139,16 +139,21 @@ async def seed_live_signals() -> int:
     else:
         logger.warning("Failed to fetch live weather signal; skipping.")
 
-    # Fetch mock sensor readings
+    # Fetch mock sensor readings (water level, air quality, temperature)
     sensor_signals = await fetch_mock_sensor_signals()
     signals.extend(sensor_signals)
     logger.info("Generated %d mock IoT sensor readings.", len(sensor_signals))
+
+    # Fetch mock traffic sensor readings
+    traffic_signals = await fetch_mock_traffic_signals()
+    signals.extend(traffic_signals)
+    logger.info("Generated %d mock traffic sensor readings.", len(traffic_signals))
 
     for sig in signals:
         await store.add_signal(sig)
 
     if signals:
-        logger.info("Live ingestion seeded %d signal(s) total (weather + sensors).", len(signals))
+        logger.info("Live ingestion seeded %d signal(s) total (weather + sensors + traffic).", len(signals))
     else:
         logger.info("No live signals to seed.")
     return len(signals)
@@ -214,6 +219,59 @@ async def fetch_mock_sensor_signals() -> list[IngestedSignal]:
         # Randomly pick 1-2 sensor types from each location
         for sensor_type in random.sample(sensor_types, k=random.randint(1, len(sensor_types))):
             sig = _build_mock_sensor_signal(sensor_type, label, lat, lon)
+            signals.append(sig)
+    
+    return signals
+
+
+# ═══════════════════════════════════════════════
+# 4. MOCK TRAFFIC SENSORS (3rd data source)
+# ═══════════════════════════════════════════════
+
+def _build_mock_traffic_signal(location_label: str, lat: float, lon: float) -> IngestedSignal:
+    """Generate mock traffic sensor reading for congestion detection."""
+    congestion = random.uniform(0.1, 0.95)
+    avg_speed = random.uniform(5.0, 60.0)
+    incidents = random.randint(0, 5)
+    closures = 1 if congestion > 0.7 else 0
+    
+    raw_text = (
+        f"IoT TRAFFIC SENSOR @ {location_label}: "
+        f"Congestion {congestion*100:.0f}%, avg speed {avg_speed:.0f} km/h, "
+        f"{incidents} incidents, {closures} road closures."
+    )
+    
+    return IngestedSignal(
+        source=SignalSource.TRAFFIC_SENSOR,
+        raw_text=raw_text,
+        location=GeoLocation(latitude=lat, longitude=lon, label=location_label),
+        traffic=TrafficData(
+            congestion_level=congestion,
+            avg_speed_kmh=avg_speed,
+            incident_count=incidents,
+            road_closures=closures,
+        ),
+        reliability_score=0.88,
+        metadata={
+            "sensor_type": "traffic",
+            "device_id": f"TRAFFIC-{random.randint(100, 999)}"
+        }
+    )
+
+
+async def fetch_mock_traffic_signals() -> list[IngestedSignal]:
+    """Generate mock traffic sensor readings from key road segments."""
+    traffic_locations = [
+        ("Khayaban-e-Suharwardy", 33.68, 73.05),
+        ("Faisal Avenue", 33.70, 73.04),
+        ("7th Avenue", 33.69, 73.07),
+        ("Blue Area", 33.72, 73.03),
+    ]
+    
+    signals = []
+    for label, lat, lon in traffic_locations:
+        if random.random() > 0.3:
+            sig = _build_mock_traffic_signal(label, lat, lon)
             signals.append(sig)
     
     return signals

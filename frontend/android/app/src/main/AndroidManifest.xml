@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="ciro_app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB3Yjt4vr-b-6ZCmJiDP0fZl2Co8BmRPLQ" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -20,9 +26,6 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyB3Yjt4vr-b-6ZCmJiDP0fZl2Co8BmRPLQ" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

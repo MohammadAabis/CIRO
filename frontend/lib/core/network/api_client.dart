@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:ciro_app/core/constants/app_constants.dart';
 
 /// Central API Client for CIRO backend.
 /// Connects to local or remote backend and falls back to mock data if offline.
@@ -10,7 +11,7 @@ class ApiClient {
   static final ApiClient instance = ApiClient._();
 
   // Configurable base URL
-  String baseUrl = 'http://127.0.0.1:8000';
+  String baseUrl = AppConstants.apiBaseUrl;
 
   final Dio _dio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 4),
@@ -20,7 +21,10 @@ class ApiClient {
   /// Check health of backend
   Future<bool> checkHealth() async {
     try {
-      final response = await _dio.get('$baseUrl/health');
+      final rootUrl = baseUrl.endsWith('/api/v1')
+          ? baseUrl.substring(0, baseUrl.length - 7)
+          : baseUrl;
+      final response = await _dio.get('$rootUrl/health');
       return response.statusCode == 200;
     } catch (_) {
       return false;
@@ -30,7 +34,7 @@ class ApiClient {
   /// Ingest raw signal data
   Future<Map<String, dynamic>> ingestSignal(Map<String, dynamic> payload) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/ingest', data: payload);
+      final response = await _dio.post('$baseUrl/ingest', data: payload);
       return response.data;
     } catch (e) {
       debugPrint('Error ingesting signal: $e');
@@ -41,7 +45,7 @@ class ApiClient {
   /// Get crises dashboard stats
   Future<Map<String, dynamic>> getStats() async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/crises/stats');
+      final response = await _dio.get('$baseUrl/crises/stats');
       return response.data;
     } catch (e) {
       debugPrint('Error getting stats: $e');
@@ -53,7 +57,7 @@ class ApiClient {
   /// List crises
   Future<Map<String, dynamic>> getCrises() async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/crises/');
+      final response = await _dio.get('$baseUrl/crises/');
       return response.data;
     } catch (e) {
       debugPrint('Error getting crises: $e');
@@ -64,7 +68,7 @@ class ApiClient {
   /// List resources
   Future<Map<String, dynamic>> getResources() async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/resources/');
+      final response = await _dio.get('$baseUrl/resources/');
       return response.data;
     } catch (e) {
       debugPrint('Error getting resources: $e');
@@ -75,7 +79,7 @@ class ApiClient {
   /// List simulations
   Future<List<dynamic>> getSimulations() async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/simulations/');
+      final response = await _dio.get('$baseUrl/simulations/');
       final data = response.data;
       if (data is Map && data.containsKey('simulations')) {
         return data['simulations'] as List<dynamic>;
@@ -96,7 +100,7 @@ class ApiClient {
       while (!isClosed) {
         try {
           final client = await Dio().get<ResponseBody>(
-            '$baseUrl/api/v1/traces/stream',
+            '$baseUrl/traces/stream',
             options: Options(
               responseType: ResponseType.stream,
               headers: {'Accept': 'text/event-stream'},
